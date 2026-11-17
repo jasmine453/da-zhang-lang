@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"><title>打蟑螂</title><meta name="application-version" content="3.0.9"><link rel="icon" href="./assets/favicon.ico"><link rel="stylesheet" href="./runtime/style.css?v=3.0.9"><link rel="stylesheet" href="./runtime/gui.css?v=3.0.9"><link rel="stylesheet" href="./runtime/mobile.css?v=3.0.9"></head><body>
+<section id="entry-gate" aria-labelledby="entry-title"><div class="entry-card">
+<div id="entry-choice"><div class="entry-kicker">厨房临时通知</div><div class="entry-art" aria-hidden="true"><canvas id="entry-scene"></canvas><span>拒绝合租</span></div><h1 id="entry-title">谁准你<br>住我家了？</h1><p class="entry-warning">它们说，厨房已经姓蟑了。</p><p class="entry-question">作者吃饭的时候玩了一把，吐了一地。<br><small>有逼真虫子，怕虫请绕行。</small></p>
+<div class="entry-modes" role="group" aria-label="选择玩法">
+<button type="button" data-mode="free" aria-pressed="true"><strong>自由开打</strong><small>随时歇，接着打</small></button>
+<button type="button" data-mode="sixty" aria-pressed="false"><strong>60 秒大扫除</strong><small>限时争高分</small></button>
+<button type="button" data-mode="hundred" aria-pressed="false"><strong>100 只竞速</strong><small>击杀百只记用时</small></button>
+</div><div class="entry-actions"><button id="entry-decline" type="button">这家不要了</button><button id="entry-accept" type="button">进屋开打</button></div><p id="entry-status" role="status"></p></div>
+<div id="entry-exit" hidden><p class="entry-exited">已退出游戏</p><p class="entry-exit-note">游戏未启动。你可以关闭此页面。</p><button id="entry-retry" type="button" hidden>重新进入</button></div><canvas id="entry-roaches" aria-hidden="true"></canvas></div></section>
+<main id="gameFrame" hidden>
+<canvas id="gl"></canvas>
+<div id="ui">
+  <div id="stick"><div id="knob"></div></div>
+
+  <div id="r1ui">
+    <div id="gui-title" aria-hidden="true"><strong>打蟑螂</strong></div>
+    <div id="wcol"></div>
+    <div id="bcol"></div>
+    <div id="kills"><span class="n">0</span><small>只</small></div>
+    <button id="quit" type="button" hidden aria-hidden="true"></button>
+    <div id="confirm" hidden aria-hidden="true">
+      <button class="stop">停下来</button>
+      <button class="more">继续玩</button>
+    </div>
+  </div>
+
+  <div id="r2ui">
+    <canvas id="mini" width="176" height="264"></canvas>
+    <div id="eggbar"></div>
+
+    <div id="pad">
+      <button id="egg" class="rbtn">产卵</button>
+      <button id="dash" class="rbtn">冲刺</button>
+    </div>
+
+    <div id="tapfx"></div>
+  </div>
+
+<div id="vig"></div>
+  <div id="tox"></div>
+  <canvas id="deathfx"></canvas>
+  <div id="hint"></div>
+  <div id="genlabel"></div>
+  <div id="fade"></div>
+  <div id="endtext"></div>
+
+  <div id="rank">
+    <div class="now"></div>
+    <div class="sub"></div>
+    <div class="list"></div>
+    <div class="again">点击画面，以相同条件再玩一次</div>
+    <button class="allover">重新开始</button>
+  </div>
+
+
+
+
+</div>
+</main>
+<div id="labLayer" aria-hidden="true">
+<div id="lab-specimenLabRoot">
+<canvas id="lab-gl"></canvas>
+<div id="lab-ui">
+  <div id="lab-toolbar">
+    <button class="tool sel" data-tool="tweezer">镊子<span class="key">1</span></button>
+    <button class="tool" data-tool="pin">固定针<span class="key">2</span></button>
+    <button class="tool" data-tool="camera">视角<span class="key">0</span></button>
+  </div>
+  <div id="lab-side">
+    <button class="action" id="lab-unpinBtn">拔出全部固定针</button>
+    <button class="action" id="lab-centerBtn">重置视角</button>
+    <button class="action" id="lab-flipBtn">翻转</button>
+    <button class="action" id="lab-wipeBtn">清空台面</button>
+    <button class="action dark" id="lab-resetBtn">换一只蟑螂</button>
+  </div>
+  <div id="lab-hint"></div>
+  <div id="lab-partLabel"></div>
+  <div id="lab-toast"></div>
+  <div id="lab-intro" class="hide" hidden><button id="lab-startBtn" type="button" hidden></button></div>
+</div>
+</div>
+<button id="labBack" type="button">返回游戏</button></div>
+<div id="intro" hidden><div class="box">
+<div class="tag">蟑螂模拟器</div>
+<p>看见<b>突然出现的蟑螂</b>，<br>你会立刻出手，<br>还是先退后一步？</p>
+<p>拖鞋、纸巾、平底锅……<br>这一次，由你来选。</p>
+<p>也可以拿起镊子，<br>近距离观察这位不速之客。</p>
+<p>准备好了吗？<br>选个顺手的工具，开始吧。</p>
+<button id="introGo" type="button">开始游戏</button>
+</div></div>
+<div id="mail" aria-hidden="true">
+  <div class="env"></div>
+  <div class="card" role="dialog" aria-label="来自蟑螂的一封信">
+    <div class="top">
+      <div class="ttl">来自蟑螂的一封信</div>
+      <div class="stamp"><svg viewBox="0 0 62 78" aria-hidden="true">
+        <defs>
+          <mask id="mailPerf"><rect width="62" height="78" fill="#fff"/><g fill="#000" id="mailPerfDots"></g></mask>
+          <radialGradient id="mailWing" cx=".42" cy=".3" r=".8"><stop offset="0" stop-color="#c98a4b"/><stop offset=".55" stop-color="#8a4a1e"/><stop offset="1" stop-color="#4a220b"/></radialGradient>
+          <radialGradient id="mailPro" cx=".45" cy=".35" r=".75"><stop offset="0" stop-color="#e2b77c"/><stop offset="1" stop-color="#9a6630"/></radialGradient>
+          <linearGradient id="mailSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--lc,#8fd1b8)"/><stop offset="1" stop-color="#fff6d8"/></linearGradient>
+        </defs>
+        <g mask="url(#mailPerf)">
+          <rect width="62" height="78" fill="#fff"/>
+          <rect x="5" y="5" width="52" height="68" fill="url(#mailSky)"/>
+          <circle cx="46" cy="16" r="6" fill="#ffd45a"/>
+          <rect x="5" y="58" width="52" height="15" fill="#d9a766"/>
+        </g>
+        <g transform="translate(31 38)">
+          <ellipse cx="1.5" cy="3" rx="10" ry="19" fill="#000" opacity=".18"/>
+          <g stroke="#2b1406" stroke-width="1.1" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M-2 -17 C-6 -24 -11 -27 -18 -30"/><path d="M2 -17 C6 -24 11 -27 18 -30"/>
+            <path d="M-6 -8 L-12 -11 L-16 -17"/><path d="M6 -8 L12 -11 L16 -17"/>
+            <path d="M-7 -2 L-14 1 L-19 6"/><path d="M7 -2 L14 1 L19 6"/>
+            <path d="M-6 3 L-13 10 L-17 21"/><path d="M6 3 L13 10 L17 21"/>
+          </g>
+          <path d="M0 -8 C8 -8 9 2 8 10 C7 18 3 22 0 22 C-3 22 -7 18 -8 10 C-9 2 -8 -8 0 -8 Z" fill="url(#mailWing)"/>
+          <path d="M0 -7 C-1 4 -1 14 0 22" stroke="#3a1a06" stroke-width=".8" fill="none"/>
+          <path d="M-4 -4 C-6 4 -5 12 -3 18" stroke="#f0c48a" stroke-width="1.1" fill="none" opacity=".45" stroke-linecap="round"/>
+          <path d="M0 -17 C6 -17 9 -13 9 -9 C9 -7 5 -6 0 -6 C-5 -6 -9 -7 -9 -9 C-9 -13 -6 -17 0 -17 Z" fill="url(#mailPro)"/>
+          <path d="M-2.4 -15.5 C-3 -12 -3 -9 -2.2 -7 M2.4 -15.5 C3 -12 3 -9 2.2 -7" stroke="#3a1a06" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <ellipse cx="0" cy="-18" rx="2.8" ry="2" fill="#5a2d10"/>
+        </g>
+      </svg></div>
+    </div>
+    <div class="body" id="mailBody"></div>
+    <div class="from">蟑螂 敬上</div>
+    <div class="fact" id="mailFact" hidden><span class="fact-tag">冷知识！</span><span id="mailFactText"></span></div>
+    <button id="mailOk" type="button">知道了</button>
+  </div>
+</div>
+
+<div id="boot" aria-hidden="true"></div>
+<div id="error" role="alert"></div>
+
+
+<script src="./runtime/standalone.js?v=3.0.9"></script>
+<script src="./runtime/entry.js?v=3.0.9"></script>
+<script src="./runtime/gui.js?v=3.0.9"></script>
+</body></html>
